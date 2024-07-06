@@ -8,6 +8,17 @@ defmodule Identicon do
     |> hash_input
     |> pick_color
     |> build_grid
+    |> filter_odd_squares
+  end
+
+  def filter_odd_squares(%Identicon.Image{grid: grid} = image) do
+    # keep only the even squares
+    grid = Enum.filter grid, fn ({code, _index}) ->
+      # even number -> returns true
+      rem(code, 2) == 0
+    end
+
+    %Identicon.Image{image | grid: grid}
   end
 
   def build_grid(%Identicon.Image{hex: hex} = image) do
