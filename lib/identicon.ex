@@ -7,6 +7,21 @@ defmodule Identicon do
     input
     |> hash_input
     |> pick_color
+    |> build_grid
+  end
+
+  def build_grid(%Identicon.Image{hex: hex} = _image) do
+    hex
+    |> Enum.chunk_every(3)
+    |> Enum.filter(&length(&1) == 3) # Ensure each chunk has exactly 3 elements
+    |> Enum.map(&mirror_row/1)
+  end
+
+  def mirror_row(row) do
+    # [212, 194, 133] -> [212, 194, 133, 194, 212]
+    [first, second | _tail] = row
+
+    row ++ [second, first]
   end
 
   def pick_color(%Identicon.Image{hex: [r, g, b | _tail]} = image) do
